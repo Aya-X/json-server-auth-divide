@@ -142,19 +142,21 @@
       <div class="container py-2">
         <h2 class="py-1">單筆內文</h2>
 
-        <div class="js-bookmark-state">收藏狀態：</div>
+        <div class="js-need-login">
+          <div class="js-bookmark-state">收藏狀態：</div>
 
-        <input
-          type="button"
-          value="加入收藏"
-          class="js-add-bookmarks btn btn-light"
-        />
+          <input
+            type="button"
+            value="加入收藏"
+            class="js-add-bookmarks btn btn-light"
+          />
 
-        <input
-          type="button"
-          value="取消收藏"
-          class="js-remove-bookmarks btn btn-light"
-        />
+          <input
+            type="button"
+            value="取消收藏"
+            class="js-remove-bookmarks btn btn-light"
+          />
+        </div>
 
         <ul class="js-post-list my-4 row list-unstyled">
           <!-- <ul class="js-post-list"> -->
@@ -354,6 +356,10 @@
 
         if (hasUserId) {
           renderBookmarkState();
+        }
+
+        if (!hasUserId) {
+          document.querySelector('.js-need-login').style.display = 'none';
         }
 
         btnAddBookmark.addEventListener('click', () => addBookmark());
