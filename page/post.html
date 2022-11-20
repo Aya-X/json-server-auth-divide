@@ -229,9 +229,19 @@
                   已收藏
               `;
 
+              btnRemoveBookmark.style.display = 'block';
               btnAddBookmark.style.display = 'none';
             }
             /* end of res-OK */
+
+            if (response.data.length === 0) {
+              domState.innerHTML = `                
+                  未收藏
+              `;
+
+              btnRemoveBookmark.style.display = 'none';
+              btnAddBookmark.style.display = 'block';
+            }
           })
           .catch(function (error) {
             // console.log('error:::', JSON.stringify(error, null, 2));
