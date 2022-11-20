@@ -100,8 +100,7 @@ function logout(event) {
   localStorage.clear();
 
   setTimeout(() => {
-    location.reload(true);
-    window.location.replace('/');
+    window.location.replace('/');    
   }, 300);
   /* end of setTimeout */
 }
