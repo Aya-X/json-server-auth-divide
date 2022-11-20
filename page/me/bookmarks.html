@@ -97,17 +97,17 @@
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
               <li class="nav-item">
-                <a
+                <!-- <a
                   class="nav-link active"
                   aria-current="page"
                   href="/playground.html"
                 >
                   測試用
-                </a>
+                </a> -->
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="/example">原版範例</a>
+                <!-- <a class="nav-link" href="/example">原版範例</a> -->
               </li>
             </ul>
             <!-- end of Left-links -->
@@ -290,6 +290,10 @@
 
               // #Step-3
               domPostList.innerHTML = htmlContent;
+
+              if (response.data.length === 0) {
+                domPostList.innerHTML = '...還沒有收藏 (◕ᴥ◕Ʋ)';
+              }
             }
             /* end of res-OK */
           })
