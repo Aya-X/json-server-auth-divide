@@ -173,15 +173,10 @@
     <!-- MAIN -->
     <script>
       // const BASE_URL = 'http://localhost:3000';
-      // console.log(location.protocol);
-      // const BASE_POST_URL = `/api/posts`;
-      // const BOOKMARKS_URL = `/api/bookmarks`;
       const BASE_POST_URL = `${BASE_URL}/664/posts`;
-      const BOOKMARKS_URL = `${BASE_URL}/600/bookmarks`;
 
       const domMsg = document.querySelector('.js-msg');
       const domPostList = document.querySelector('.js-post-list');
-
       /* end of definition */
 
       function getLoggedID() {
@@ -189,156 +184,26 @@
       }
       /* end of hasLogged() */
 
-      function sendBookmarks(event) {
+      function goToPostPage(event) {
         const target = event.target;
         console.log('target:::', target);
 
-        const targetBtn = event.target.closest('button');
-        console.log('targetBtn:::', targetBtn);
+        const targetList = event.target.closest('li');
+        console.log('targetList:::', targetList);
 
-        if (!targetBtn) {
+        const postId = targetList.dataset.id;
+        console.log('postId:::', postId, typeof postId);
+
+        if (!postId) {
           return;
         }
 
-        const targetType = targetBtn.dataset.type;
-        console.log('targetType:::', targetType);
+        const page = `./post.html?postId=${postId}`;
+        console.log('page >>> ', page);
 
-        if (targetType === 'DELETE') {
-          const bookId = targetBtn.dataset.bookId;
-
-          const url = `${BOOKMARKS_URL}/${bookId}`;
-
-          axios
-            .delete(url)
-            .then(function (response) {
-              // console.log('remove:::', JSON.stringify(response, null, 2));
-
-              domMsg.innerHTML = response.statusText;
-              if (response.status === 200) {
-                targetBtn.disabled = false;
-                renderPosts();
-              }
-              /* end of res.ok */
-            })
-            .catch(function (error) {
-              console.log('error:::', JSON.stringify(error, null, 2));
-
-              domMsg.innerHTML = error.response.data;
-            });
-          /*  end of axios */
-        }
-        /*  end of DELETE */
-
-        if (targetType === 'POST') {
-          // #NOTE: disabled 避免被連點會重複發送請求
-          targetBtn.disabled = true;
-          targetBtn.innerHTML = `
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
-            </span>
-            Loading...
-          `;
-
-          const targetList = event.target.closest('li');
-          console.log('targetList:::', targetList);
-
-          const postId = targetList.dataset.id;
-          console.log('postId:::', postId, typeof postId);
-
-          // const userId = getLoggedID();
-          const userId = Number(getLoggedID());
-          const url = `${BOOKMARKS_URL}`;
-          // const url = `${BASE_URL}/posts/${postId}/bookmarks`;
-          const data = {
-            userId,
-            postId: Number(postId),
-          };
-
-          axios
-            .post(url, data)
-            .then(function (response) {
-              // console.log('posts:::', JSON.stringify(response, null, 2));
-              domMsg.innerHTML = response.statusText;
-
-              if (response.status === 201) {
-                renderPosts();
-              }
-              /* end of res.ok */
-            })
-            .catch(function (error) {
-              console.log('error:::', JSON.stringify(error, null, 2));
-
-              domMsg.innerHTML = error.response.data;
-            });
-          /*  end of axios */
-        }
-        /*  end of POST */
+        window.location.replace(page);
       }
-      /*  end of sendBookmarks(event) */
-
-      function templateOfBookmarkButton(bookmarks) {
-        // #Step: 0-用瀏覽器資料判斷登入狀態
-        if (!getLoggedID()) {
-          return '';
-        }
-        console.log('bookmarks:::', bookmarks);
-
-        // #Step: 1-取出資料裡面的全部 userId
-        const usersOfBookmarks = bookmarks?.map((item) => {
-          return item.userId;
-        });
-        console.log('usersOfBookmarks:::', usersOfBookmarks);
-
-        // const myUserId = getLoggedID();
-        const myUserId = Number(getLoggedID());
-        // #Step: 2-判斷有無包含自己的 `myUserId`
-        const hasBookmarked = usersOfBookmarks?.includes(myUserId);
-        console.log('hasBookmarked:::', hasBookmarked);
-
-        // #Step: 3.0-有存在就顯示取消的按鈕
-        if (hasBookmarked) {
-          // #Step: 3.1-過濾出該筆資料
-          const myBookmarks = bookmarks.filter((item) => {
-            return item.userId == myUserId;
-          });
-          // #Step: 3.2-取得陣列裡的物件 bookmarkId
-          const myBookmarkId = myBookmarks[0].id;
-          console.log('myBookmarkId::', myBookmarkId);
-          // #Step: 3.3-綁到取消的按鈕身上，方便傳送刪除請求
-          // 取消收藏
-          return `
-            <button type="button"
-              class="d-flex justify-content-end align-items-center gap-1 px-1 mb-2
-                btn btn-sm btn-secondary"
-              data-type="DELETE"
-              data-book-id=${myBookmarkId}
-            >
-              已收藏
-              <span class="material-symbols-outlined">
-                bookmark_added
-              </span>
-            </button>
-          `;
-        }
-        /* end of if-(hasBookmarked) */
-
-        // #Step: 4-沒有則顯示加入的按鈕
-        if (!hasBookmarked) {
-          return `
-            <button type="button"
-              class="d-flex justify-content-end align-items-center gap-1 px-1 mb-2
-                btn btn-sm btn btn-outline-dark"
-              data-type="POST"
-            >              
-              加入收藏
-              <span class="material-symbols-outlined">
-                bookmark
-              </span>
-            </button>
-          `;
-        }
-        /* end of if-(!hasBookmarked) */
-      }
-      /* end of templateOfBookmarkButton(bookmarks) */
+      /*  end of goToPostPage(event) */
 
       /**
        * #Step-2: print html with post list
@@ -359,8 +224,6 @@
            * @type { String } article
            */
           const article = post.body ? post.body : '';
-          const bookmarks = post.bookmarks;
-          // console.log('bookmarks:::', JSON.stringify(bookmarks[0], null, 2));
 
           // <small class="text-muted">
           //   <code>${post.id}</code>
@@ -371,11 +234,7 @@
               class="col-sm-6 col-lg-4 mb-4"
             >
               <div class="card">
-                <section class="card-body">
-
-                  <div class="d-flex justify-content-end align-items-center p-0">
-                    ${templateOfBookmarkButton(bookmarks)}
-                  </div>
+                <section class="card-body">                  
 
                   <h3 class="card-title  text-truncate">
                     ${post.title}
@@ -400,7 +259,7 @@
        * #Step-1: `GET` data from API
        */
       function renderPosts() {
-        const url = `${BASE_POST_URL}?_embed=bookmarks`;
+        const url = `${BASE_POST_URL}`;
 
         axios
           .get(url)
@@ -432,7 +291,7 @@
       function init() {
         renderPosts();
 
-        domPostList.addEventListener('click', (event) => sendBookmarks(event));
+        domPostList.addEventListener('click', (event) => goToPostPage(event));
         // event.stopPropagation()
       }
       /* end of init() */
