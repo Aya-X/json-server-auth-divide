@@ -56,7 +56,7 @@ function templateOfUserMenu(user, template = '') {
 
 function renderUserMenu() {
   const userId = getLoggedID();  
-  const url = `${BASE_URL}/users/${userId}`;
+  const url = `${BASE_URL}/600/users/${userId}`;
 
   console.log('url >>> ', url);
 
