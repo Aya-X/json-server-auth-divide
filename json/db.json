@@ -62,27 +62,12 @@
     {
       "userId": 1,
       "postId": 1,
-      "id": 4
+      "id": 1
     },
     {
       "userId": 1,
-      "postId": 2,
-      "id": 5
-    },
-    {
-      "userId": 5,
-      "postId": 1,
-      "id": 6
-    },
-    {
-      "userId": 5,
-      "postId": 2,
-      "id": 7
-    },
-    {
-      "userId": 5,
-      "postId": 3,
-      "id": 8
+      "postId": "2",
+      "id": 2
     }
   ]
 }
