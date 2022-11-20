@@ -184,27 +184,6 @@
       }
       /* end of hasLogged() */
 
-      function goToPostPage(event) {
-        const target = event.target;
-        console.log('target:::', target);
-
-        const targetList = event.target.closest('li');
-        console.log('targetList:::', targetList);
-
-        const postId = targetList.dataset.id;
-        console.log('postId:::', postId, typeof postId);
-
-        if (!postId) {
-          return;
-        }
-
-        const page = `./post.html?postId=${postId}`;
-        console.log('page >>> ', page);
-
-        window.location.replace(page);
-      }
-      /*  end of goToPostPage(event) */
-
       /**
        * #Step-2: print html with post list
        * @param { Array } posts
@@ -234,7 +213,11 @@
               class="col-sm-6 col-lg-4 mb-4"
             >
               <div class="card">
-                <section class="card-body">                  
+                <section class="card-body">
+
+                  <div class="d-flex justify-content-end align-items-center p-0">
+                    <a href="./post.html?postId=${post.id}" class="pe-auto">延伸閱讀</a>
+                  </div>
 
                   <h3 class="card-title  text-truncate">
                     ${post.title}
@@ -291,8 +274,6 @@
       function init() {
         renderPosts();
 
-        domPostList.addEventListener('click', (event) => goToPostPage(event));
-        // event.stopPropagation()
       }
       /* end of init() */
 
