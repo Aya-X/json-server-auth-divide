@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant-TW" class="h-100">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="referrer" content="no-referrer" />
+    <!-- <meta name="theme-color" content="#7952b3" /> -->
+
+    <title>Create Post | Dashboard</title>
+
+    <!-- CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.2.1/classic/ckeditor.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="canonical"
+      href="https://bootstrap5.hexschool.com/docs/5.1/examples/sticky-footer-navbar/"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <style></style>
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <section class="container-fluid">
+          <!-- <a href="/admin/desk.html" class="navbar-brand">主控台</a> -->
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+
+              <li class="nav-item">
+                <!-- <a class="nav-link" href="/example">原版範例</a> -->
+              </li>
+            </ul>
+          </div>
+        </section>
+      </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+      <div class="container py-5">
+        <h2 class="py-5">新增資料</h2>
+
+        <form action="POST" class="js-form-editor">
+          <input type="text" name="title" placeholder="標題" required />
+
+          <div id="editor">
+            <p>Here goes the initial content of the editor.</p>
+          </div>
+
+          <input
+            type="button"
+            value="送出"
+            class="js-send-to-set-editor btn btn-primary"
+          />
+        </form>
+
+        <pre class="js-preview"></pre>
+      </div>
+    </main>
+
+    <pre class="js-msg"></pre>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <a class="nav-link text-muted" href="/admin">前往後台</a>
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="../../helpers/uploadAdpter.js"></script>
+    <script>
+      const BASE_URL = 'http://localhost:3000';
+      const BASE_POST_URL = `${BASE_URL}/664/posts`;
+      // const BASE_POST_URL = `/api/posts`;
+
+      const domMsg = document.querySelector('.js-msg');
+      const form = document.querySelector('.js-form-editor');
+      const btnSendEditor = document.querySelector('.js-send-to-set-editor');
+      /* end of definition */
+
+      function sendPostToAPI({ method, url, data }) {
+        axios({ method, url, data })
+          .then(function (response) {
+            // console.log('sendPost:::', JSON.stringify(response, null, 2));
+            domMsg.innerHTML = response.statusText;
+
+            console.log(response.status);
+            const isOK = response.status === 201 || response.status === 200;
+            if (isOK) {
+              window.location.replace('/admin/desk.html');
+            }
+            /* end of IF-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.status;
+          });
+        /*  end of axios */
+      }
+      /* end of sendPostToAPI({ method, url, data }) */
+
+      function submitPost(articleData, dataText) {
+        // const userId = localStorage.getItem('userId');
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        const method = 'POST';
+
+        const url = `${BASE_POST_URL}`;
+
+        const data = {
+          title: `${form.title.value || Date.now()}`,
+          body: articleData || '',
+          plainText: dataText || '',
+          // userId,
+        };
+
+        return sendPostToAPI({ method, url, data });
+      }
+      /* submitPost(articleData, dataText) */
+
+      function getEditorData(editor) {
+        // #REVIEW: weird naming of fn?
+        const articleData = editor.getData();
+        // console.log('getData():::', data);
+        domMsg.innerHTML = articleData;
+
+        const dataText = editor.ui.view.editable.element.innerText;
+        console.log('editor-innerText >>> ', dataText);
+
+        return submitPost(articleData, dataText);
+      }
+      /* getEditorData(editor) */
+
+      function editorHandler(editor) {
+        btnSendEditor.addEventListener('click', () => getEditorData(editor));
+      }
+      /* end of editorHandler(editor) */
+
+      /**
+       * #Step-0: after page refresh
+       */
+      function init() {
+        ClassicEditor.create(document.querySelector('#editor'), {
+          extraPlugins: [MyCustomUploadAdapterPlugin],
+        })
+          .then((editor) => {
+            // console.dir('editor:::', editor);
+
+            editorHandler(editor);
+          })
+          .catch((error) => {
+            console.error('error:::', error);
+          });
+        /* end of ClassicEditor.create() */
+      }
+      /* end of init() */
+
+      // MAIN
+      init();
+    </script>
+    <!-- end of script -->
+  </body>
+</html>

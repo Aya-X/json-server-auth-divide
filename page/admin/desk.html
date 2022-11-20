@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant-TW" class="h-100">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <!-- <meta name="theme-color" content="#7952b3" /> -->
+
+    <title>Desk</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="canonical"
+      href="https://bootstrap5.hexschool.com/docs/5.1/examples/sticky-footer-navbar/"
+    />
+
+    <style>
+      figure img {
+        display: none;
+      }
+    </style>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      figure img{
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <section class="container-fluid">
+          <a href="#" class="navbar-brand">這裡是主控台</a>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/"
+                  >回到首頁</a
+                >
+              </li>
+
+              <!-- <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="/playground.html"
+                >
+                  測試用
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/example">原版範例</a>
+              </li> -->
+            </ul>
+          </div>
+        </section>
+      </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0 js-main">
+      <div class="container py-5">
+        <h2 class="py-5">
+          <a href="./posts/create.html" class="block">新增文章-GO!</a>
+        </h2>
+
+        <section class="js-post-list">
+          <!-- inject data from API -->
+          <pre>LOADING...</pre>
+        </section>
+      </div>
+
+      <pre class="js-msg"></pre>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <!-- <a class="nav-link text-muted" href="/admin">回到後台入口</a> -->
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+      const BASE_URL = 'http://localhost:3000';
+      const BASE_POST_URL = `${BASE_URL}/664/posts`;
+      // const BASE_POST_URL = `/api/posts`;
+      const USERS_URL = `${BASE_URL}/600/users`;
+
+      const domMsg = document.querySelector('.js-msg');
+      const domPostList = document.querySelector('.js-post-list');
+      /* end of definition */
+
+      function goToEditPost(id) {
+        console.log('editPost:::', id);
+
+        const page = `./posts/editor.html?id=${id}`;
+        console.log('page >>> ', page);
+
+        window.location.replace(page);
+      }
+      /* end of goToEditPost(id) */
+
+      function deletePost(id) {
+        console.log('deletePost:::', id);
+
+        const url = `${BASE_POST_URL}/${id}`;
+        console.log('url >>> ', url);
+
+        axios
+          .delete(url)
+          .then(function (response) {
+            // console.log('DELETE:::', JSON.stringify(response, null, 2));
+            domMsg.innerHTML = response.statusText;
+
+            getPosts();
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of deletePost(id) */
+
+      function modifyPost(event) {
+        // console.dir(event);
+        const target = event.target;
+        const targetType = event.target.dataset.type;
+        console.log('target:::', target);
+
+        // const targetTag = event.target.closest('li');
+        const targetTag = event.target.closest('tr');
+        const targetId = targetTag.dataset.id;
+        console.log('targetId:::', typeof targetId);
+        // const targetIdInt = Number(targetId);
+        // console.log('targetIdInt:::', targetIdInt);
+
+        if (!targetType) {
+          return null;
+        }
+
+        if (targetType === 'DELETE') {
+          console.log('targetType:::', targetType);
+          return deletePost(targetId);
+        }
+
+        if (targetType === 'EDIT') {
+          console.log('targetType:::', targetType);
+          return goToEditPost(targetId);
+        }
+      }
+      /* end of modifyPost() */
+
+      function postsTemplate(
+        posts,
+        template = `
+      <div class="table-responsive">
+        <table class="js-post-list  table align-middle table-sm table-hover">
+          <thead class="table-light text-center">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">標題</th>
+              <th scope="col">內文</th>
+              <th scope="col"></th> 
+            </tr>
+          </thead>
+
+          <tbody class="">
+      `
+      ) {
+        posts.forEach((post) => {
+          const article = post.body ? post.body : '';
+
+          template += `
+            <tr  data-id="${post.id}">
+              <th scope="row">
+                <code>${post.id}</code>
+              </th>
+
+              <td>
+                ${post.title}
+              </td>
+              <td>
+                <article>${article}</article>
+              </td>
+
+              <td>
+                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                  
+                  <input data-type="DELETE"
+                  class="js-delete  btn btn-sm btn-outline-danger" type="button" value="刪除">
+
+                  <input data-type="EDIT"
+                  class="js-edit  btn btn-sm btn-warning" type="button" value="編輯">                  
+                </div>
+              </td>              
+            </tr>        
+        `;
+        });
+
+        template += `
+          </tbody>
+        </table>
+      </div>
+      `;
+
+        return template;
+      }
+      /* end of postsTemplate() */
+
+      function getPosts() {
+        const url = `${BASE_POST_URL}`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('posts:::', JSON.stringify(response, null, 2));
+            const htmlContent = postsTemplate(response.data);
+            domPostList.innerHTML = htmlContent;
+          })
+          .catch(function (error) {
+            // console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.status;
+          });
+        /*  end of axios */
+      }
+      /* end of getPosts() */
+
+      function getLoggedID() {
+        return localStorage.getItem('userId') || 0;
+      }
+      /* end of hasLogged() */
+
+      /**
+       * #Step-0: after page refresh
+       */
+      function init() {
+        if (!getLoggedID()) {
+          window.location.replace('/');
+        }
+
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        const userId = getLoggedID();
+        // const url = `/api/users/${userId}`;
+        const url = `${USERS_URL}/${userId}`
+
+        console.log('url >>> ', url);
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('GET-Me:::', JSON.stringify(response, null, 2));
+
+            if (response.status === 200) {
+              // console.log('OK!');
+              const isAdmin = response.data?.role === 'admin';
+              if (!isAdmin) {
+                console.log('401!');
+                document.querySelector('.js-main').innerHTML = '';
+
+                window.location.replace('/');
+              }
+
+              if (isAdmin) {
+                getPosts();
+              }
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            // console.log('error:::', JSON.stringify(error, null, 2));
+
+            if (error?.response?.status === 401) {
+              console.log('401');
+              localStorage.clear();
+
+              window.location.replace('/login.html');
+            }
+
+            domMsg.innerHTML = error?.response?.status || error;
+          });
+        /*  end of axios */
+
+        document
+          .querySelector('.js-post-list')
+          .addEventListener('click', (event) => modifyPost(event));
+      }
+      /* end of init() */
+
+      // MAIN
+      init();
+    </script>
+    <!-- end of script -->
+  </body>
+</html>
