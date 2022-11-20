@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant-TW" class="h-100">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <!-- <meta name="theme-color" content="#7952b3" /> -->
+
+    <title>Login | GUEST</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="canonical"
+      href="https://bootstrap5.hexschool.com/docs/5.1/examples/sticky-footer-navbar/"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      .circular-landscape {
+        display: inline-block;
+        position: relative;
+        width: 24px;
+        height: 24px;
+        overflow: hidden;
+        border-radius: 50%;
+
+        /* #REVIEWS */
+        /* @nest img & {
+          width: auto;
+          height: 100%;
+          margin-top: -12px;
+          margin-left: -0.25px;
+        } */
+      }
+
+      .circular-landscape img {
+        display: block;
+        width: 100%;
+        /* width: auto; */
+        height: 100%;
+        margin-left: -0.25px;
+      }
+    </style>
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    <header class="sticky-top">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <!-- Container-wrapper -->
+        <section class="container-fluid">
+          <!-- Navbar brand -->
+          <a class="navbar-brand me-2" href="/">LOGO</a>
+
+          <!-- Toggle button -->
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible-wrapper -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="/playground.html"
+                >
+                  測試用
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/example">原版範例</a>
+              </li>
+            </ul>
+            <!-- end of Left-links -->
+
+            <div class="d-flex align-items-center">
+              <ul class="navbar-nav js-user-menu">
+                <!-- #NOTE: check IF-login and inject dropdown-btns -->
+              </ul>
+              <!-- end of User-btns -->
+
+              <div>
+                <!-- #REVIEWS:  -->
+                <a href="/login.html" class="btn btn-sm text-muted px-3 me-2">
+                  登入
+                </a>
+
+                <a href="/register.html" class="btn btn-primary btn-sm me-3"
+                  >免費註冊</a
+                >
+              </div>
+              <!-- end of GUEST-btns -->
+            </div>
+          </div>
+          <!-- end of Collapsible-wrapper -->
+        </section>
+        <!-- end of Container-wrapper -->
+      </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+      <section class="container-fluid pt-3">
+        <h2 class="py-1">登入</h2>
+
+        <form action="POST" class="js-form-login d-grid gap-3">
+          <div class="form-group">
+            <label for="exampleInputEmail1">信箱</label>
+            <input
+              name="email"
+              type="email"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              placeholder="email@mail.com"
+            />
+
+            <!-- <small id="emailHelp" class="form-text text-muted">
+                  We'll never share your email with anyone else.
+          </small> -->
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">密碼</label>
+            <input
+              name="password"
+              type="password"
+              class="form-control"
+              id="exampleInputPassword1"
+              placeholder="●●●●●●●●"
+            />
+          </div>
+
+          <!-- <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div> -->
+
+          <input
+            type="button"
+            value="登入"
+            class="js-btn-login btn btn-primary"
+          />
+        </form>
+      </section>
+
+      <pre class="js-msg"></pre>
+    </main>
+
+    <footer class="footer mt-auto py-2 bg-light">
+      <div class="container">
+        <!-- <a class="nav-link text-muted" href="/admin">後台入口</a> -->
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+      const BASE_URL = 'http://localhost:3000';
+      const LOGIN_URL = `${BASE_URL}/login`;
+      // const LOGIN_URL = '/login';
+
+      const domMsg = document.querySelector('.js-msg');
+      const btnLogin = document.querySelector('.js-btn-login');
+      const form = document.querySelector('.js-form-login');
+
+      const btnUserMenu = document.querySelector('.js-user-menu');
+      /* end of definition */
+
+      function saveUserToLocal({ accessToken, user }) {
+        // const now = Date.now();
+        // const expired = now + 1 * 1000 * 60 * 60;
+        // // const isLogin = expired > now;
+
+        // localStorage.setItem('expired', expired);
+
+        localStorage.setItem('token', accessToken);
+        localStorage.setItem('userId', user.id);
+        localStorage.setItem('nickname', user.nickname);
+        localStorage.setItem('avatar', user.avatar);
+      }
+      /* end of saveUserToLocal() */
+
+      /**
+       * #Step-1: `POST` data to API
+       */
+      function login() {
+        console.log('Login!');
+
+        const url = `${LOGIN_URL}`;
+        // const data = {
+        //   email: 'dev@admin.me',
+        //   password: '12345678',
+        // };
+        const data = {
+          email: form.email.value.trim(),
+          password: form.password.value.trim(),
+        };
+
+        const hasInput = data.email && data.password;
+        if (hasInput) {
+          return axios
+            .post(url, data)
+            .then(function (response) {
+              console.log('login:::', JSON.stringify(response, null, 2));
+
+              domMsg.innerHTML = response.statusText;
+
+              if (response.status === 200) {
+                saveUserToLocal(response.data);
+
+                let redirectPath = '/';
+                // const isAdmin = response.data?.user?.role?.includes('admin');
+                const isAdmin = response.data?.user?.role === 'admin';
+                if (isAdmin) {
+                  redirectPath = 'admin/desk.html';
+                }
+
+                setTimeout(() => {
+                  console.log('Redirect!');
+                  window.location.replace(redirectPath);
+                }, 150);
+                /* end of setTimeout */
+              }
+              /* end of response.OK */
+            })
+            .catch(function (error) {
+              console.log('error:::', JSON.stringify(error, null, 2));
+
+              domMsg.innerHTML = error?.response?.data || error;
+            });
+          /*  end of axios */
+        }
+        /* end of IF-hasInput */
+
+        domMsg.innerHTML = '請輸入資料 (ﾉ◕ヮ◕)ﾉ';
+      }
+      /* end of login() */
+
+      function templateUserMenu(avatar, nickname) {
+        // avatar = 'https://i.imgur.com/PTjQZ3A.png',
+        // nickname = 'HI!',
+        return `
+          <li class="nav-item dropdown">
+            <div>
+              <!-- Avatar -->
+              <a
+                href="#"
+                class="nav-link d-flex align-items-center"
+                role="button"
+              >
+              <div class="circular-landscape">
+                <img
+                  src=${avatar || 'https://i.imgur.com/PTjQZ3A.png'}
+                  loading="lazy"
+                  alt="Avatar"
+                />
+              </div>
+
+                <strong class="d-none d-sm-block ms-1 px-1">
+                  ${nickname || 'HI!'}
+                </strong>
+
+              </a>
+              <!-- end of dropdown-toggle-Avatar -->
+
+            </div>
+          </li>
+        `;
+      }
+      /* end of templateUserMenu() */
+
+      function localLoginChecker() {
+        console.log('localLoginChecker!');
+        // const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        const localJWT = localStorage.getItem('token');
+        // console.log(localJWT);
+
+        if (localJWT) {
+          const nickname = localStorage.getItem('nickname');
+          const avatar = localStorage.getItem('avatar');
+
+          // btnUserMenu.innerHTML = templateUserMenu({ avatar, nickname });
+          btnUserMenu.innerHTML = templateUserMenu(avatar, nickname);
+        }
+        /* end of IF-(localJWT) */
+      }
+      /* end of localLoginChecker() */
+
+      /**
+       * #Step-0: after page refresh
+       */
+      function init() {
+        localLoginChecker();
+
+        btnLogin.addEventListener('click', () => login());
+      }
+      /* end of init() */
+
+      // MAIN
+      init();
+    </script>
+    <!-- end of script -->
+  </body>
+</html>

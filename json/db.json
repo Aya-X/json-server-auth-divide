@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "dev@admin.me",
+      "password": "$2a$10$vvpTDyLSJVXoxp9yURfDUe0lTv7GKh5COn6yEKA/D.7Cn1bFdYQKG",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "email": "sample@dev",
+      "password": "$2a$10$Vviu.6gs/PIqwcX4VDakNuWn/EmKieUH8FNlskgKmQfvDnvqplCmu",
+      "role": "user"
+    },
+    {
+      "id": 3,
+      "email": "ggg@gg.com",
+      "password": "$2a$10$ZVZI2VbUReGNLfkWiOyCteRqwKRtbDiRw4KL86eS6/hVSkgCBCDyi",
+      "role": "user"
+    },
+    {
+      "email": "g1@dev",
+      "password": "$2a$10$.9GGO9BfJi6s1mNmMVMryekKU8FYrC/OaxlT86dxz9QyzWH8Y8UKG",
+      "id": 4,
+      "role": "user"
+    },
+    {
+      "email": "g6@dev",
+      "password": "$2a$10$pBAKhPdFpfb03Ei9hcIaNu2tJqynGID0BUEPoGE.rQIpzG9GAp646",
+      "id": 5
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "《PUI PUI DRIVING SCHOOL》",
+      "body": "<figure class=\"image\"><img src=\"https://i.imgur.com/MVwCIdy.jpg\"></figure><figure class=\"image\"><img></figure><p>&nbsp;</p>",
+      "plainText": "\n\n\nimage widget",
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "title": "第 2 季慶祝",
+      "body": "月曆開賣囉",
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "title": "車車路跑緊急公告",
+      "body": "由於疫情升溫，決定暫緩舉辦本次活動",
+      "userId": 1
+    },
+    {
+      "id": 4,
+      "title": "test",
+      "body": "<p>Here goes the initial content of the editor.</p><figure class=\"image\"><img src=\"https://i.imgur.com/FxuIhDr.jpg\"></figure>",
+      "plainText": "Here goes the initial content of the editor.\n\nimage widget",
+      "userId": 3
+    }
+  ],
+  "bookmarks": [
+    {
+      "userId": 1,
+      "postId": 1,
+      "id": 4
+    },
+    {
+      "userId": 1,
+      "postId": 2,
+      "id": 5
+    },
+    {
+      "userId": 5,
+      "postId": 1,
+      "id": 6
+    },
+    {
+      "userId": 5,
+      "postId": 2,
+      "id": 7
+    },
+    {
+      "userId": 5,
+      "postId": 3,
+      "id": 8
+    }
+  ]
+}
