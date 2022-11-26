@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Carts</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
+  </head>
+
+  <body>
+    <header class="sticky-top">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <!-- Container-wrapper -->
+        <section class="container-fluid">
+          <!-- Navbar brand -->
+          <a class="navbar-brand me-2" href="/">LOGO</a>
+
+          <!-- Toggle button -->
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible-wrapper -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0"></ul>
+            <!-- end of Left-links -->
+
+            <div class="d-flex align-items-center">
+              <ul class="navbar-nav js-user-menu">
+                <!-- #NOTE: check IF-login and inject dropdown-btns -->
+              </ul>
+              <!-- end of User-btns -->
+
+              <div class="js-guest-menu">
+                <a href="../login.html" class="btn btn-sm text-muted px-3 me-2">
+                  登入
+                </a>
+
+                <a href="../register.html" class="btn btn-primary btn-sm me-3"
+                  >免費註冊</a
+                >
+              </div>
+              <!-- end of GUEST-btns -->
+            </div>
+          </div>
+          <!-- end of Collapsible-wrapper -->
+        </section>
+        <!-- end of Container-wrapper -->
+      </nav>
+    </header>
+
+    <main class="container py-4">
+      <section class="h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="fw-normal mb-0 text-black">購物車明細</h2>
+            </div>
+
+            <ul class="js-cart-list list-unstyled"></ul>
+
+            <div class="card mb-5">
+              <div class="card-body p-4">
+                <div class="float-end">
+                  <p class="mb-0 me-5 d-flex align-items-center">
+                    <span class="small text-muted me-2">總金額：</span>
+
+                    <span class="js-cart-sum lead fw-normal">$7999</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <a href="../products/" class="btn btn-light btn-lg me-2">
+                繼續選購
+              </a>
+
+              <a href="./checkout.html" class="btn btn-primary btn-lg"
+                >前往結帳</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="card mt-4">
+        <div class="card-footer text-muted fs-4">
+          <code class="js-msg">LOG</code>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <!-- <a class="nav-link text-muted" href="/admin">前往後台</a> -->
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script src="../helpers/renderUserMenu.js"></script>
+
+    <script>
+      // const BASE_URL = 'http://localhost:3000';
+      const PRODUCTS_URL = `${BASE_URL}/664/products`;
+      const USERS_URL = `${BASE_URL}/600/users`;
+      const CARTS_URL = `${BASE_URL}/600/carts`;
+
+      const domMsg = document.querySelector('.js-msg');
+
+      const domCartSum = document.querySelector('.js-cart-sum');
+      const domCartList = document.querySelector('.js-cart-list');
+
+      const btnAddToCart = document.querySelector('.js-add-cart');
+      /* end of definition */
+
+      function getLoggedID() {
+        return localStorage.getItem('userId') || 0;
+      }
+      /* end of hasLogged() */
+
+      // #Step-2.0
+      function templateOfCarts(carts, template = ``) {
+        carts.forEach((item) => {
+          const product = item.product;
+
+          template += `
+            <li data-id="${item.id}"  class='card rounded-3 mb-4'>
+              <div class='card-body p-4'>
+                <div class='row d-flex justify-content-between align-items-center'>
+                  <div class='col-md-3 col-lg-3 col-xl-3'>
+                    <h3 class='lead fw-normal mb-2'>
+                      ${product.title}
+                    </h3>
+                  </div>
+
+                        <div class='col-md-3 col-lg-3 col-xl-2 d-flex'>
+                          <button
+                            type="button"
+                            data-type="PATCH"
+                            class='btn btn-link px-2'
+                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
+                          >
+                            <i class='bi bi-dash-lg'></i>
+                          </button>
+
+                          <input
+                            id='form-${item.id}'
+                            name='qty'
+                            type='number'
+                            value='${item.qty}'
+                            min='1'
+                            class='form-control form-control-sm text-center'
+                            disabled
+                          />
+
+                          <button
+                            type="button"
+                            data-type="PATCH"
+                            class='btn btn-link px-2'
+                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                          >
+                            <i class='bi bi-plus-lg'></i>
+                          </button>
+                        </div>
+
+                        <div class='col-md-3 col-lg-2 col-xl-2 offset-lg-1'>
+                          <p class='mb-0'>$ ${item.qty * product.price}</p>
+                        </div>
+
+                        <div class='col-md-1 col-lg-1 col-xl-1 text-end'>
+                          <button
+                            type="button"
+                            data-type="DELETE"
+                            class='btn btn-link px-2 text-danger'                            
+                          >
+                            <i class='bi bi-trash3'></i>
+                          </button>                          
+                        </div>
+
+                      </div>
+                    </div>
+                  </li>
+                `;
+        });
+        /* end of forEach() */
+        return template;
+      }
+      /* end of templateOfCarts(carts, template = ``) */
+
+      // #Step-1
+      function renderCartState() {
+        console.log('renderCartState!');
+        // #Step-1.0
+        const userId = getLoggedID();
+
+        // #Step-1.1
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        // #Step-1.2
+        const url = `${USERS_URL}/${userId}/carts?_expand=product`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('carts:::', JSON.stringify(response, null, 2));
+            // domMsg.innerHTML = response.statusText;
+            domMsg.innerHTML = `carts-
+              <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+
+            // #Step-1.3
+            if (response.status === 200) {
+              const carts = response.data;
+              // #Step-2
+              const htmlContent = templateOfCarts(carts);
+              domCartList.innerHTML = htmlContent;
+
+              // #Step-3.0
+              let sum = 0;
+              carts.forEach((item) => {
+                // #NOTE: change to forEach()
+                const intQty = Number(item.qty) || 0;
+                const intPrice = Number(item.product.price);
+                const total = intQty * intPrice;
+
+                sum += total;
+              });
+              console.log('sum:::', sum);
+
+              // #Step-3.1
+              domCartSum.innerHTML = `$${sum}`;
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of renderCartState() */
+
+      // #Step-4.0
+      function modifyCart(event) {
+        // event.preventDefault();
+        console.log(event);
+
+        // #Step-4.1
+        const target = event.target;
+        console.dir('target:::', target);
+        const targetBtn = event.target.closest('button');
+        console.log('targetBtn:::', targetBtn);
+
+        // #Step-4.2
+        if (!targetBtn) {
+          return;
+        }
+
+        // #Step-4.3
+        const targetList = targetBtn.closest('li');
+        const targetId = targetList.dataset.id;
+        console.log('targetId:::', targetId);
+
+        // #Step-4.4
+        const targetType = targetBtn.dataset.type;
+        console.log('targetType:::', targetType);
+
+        // #Step-4.5
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        // #Step-4.6
+        const url = `${CARTS_URL}/${targetId}`;
+
+        // #Step-5.0
+        if (targetType === 'PATCH') {
+          // #Step-5.1
+          // parentNode.querySelector('input[type=number]')
+          const targetInput =
+            targetBtn.parentNode.querySelector('input[type=number]');
+          console.log('targetInput:::', targetInput);
+
+          // #Step-5.2
+          const intQty = Number(targetInput.value) || 1;
+          console.log('intQty:::', intQty);
+
+          // #Step-5.3
+          const data = {
+            qty: intQty,
+          };
+
+          axios
+            .patch(url, data)
+            .then(function (response) {
+              // console.log('carts:::', JSON.stringify(response, null, 2));
+
+              // #Step-5.4
+              if (response.status === 200) {
+                renderCartState();
+              }
+              /* end of res.ok */
+              domMsg.innerHTML = response.statusText;
+            })
+            .catch(function (error) {
+              console.log('error:::', JSON.stringify(error, null, 2));
+
+              domMsg.innerHTML = error.response.data;
+            });
+          /*  end of axios */
+        }
+        /* end of IF-PATCH */
+
+        // #Step-6.0
+        if (targetType === 'DELETE') {
+          axios
+            .delete(url)
+            .then(function (response) {
+              // console.log('carts:::', JSON.stringify(response, null, 2));
+
+              // #Step-6.1
+              if (response.status === 200) {
+                renderCartState();
+              }
+              /* end of res.ok */
+              domMsg.innerHTML = response.statusText;
+            })
+            .catch(function (error) {
+              console.log('error:::', JSON.stringify(error, null, 2));
+
+              domMsg.innerHTML = error.response.data;
+            });
+          /*  end of axios */
+        }
+        /* end of IF-DELETE */
+      }
+      /* end of modifyCart(event) */
+
+      // #Step-0
+      function init() {
+        // #Step-1
+        renderCartState();
+
+        // #Step-4
+        domCartList.addEventListener('click', (event) => modifyCart(event));
+      }
+      /* end of init() */
+
+      // MAIN
+      init();
+    </script>
+  </body>
+</html>

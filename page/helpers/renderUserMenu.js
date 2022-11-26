@@ -27,6 +27,14 @@ function templateOfUserMenu(user, template = '') {
   template += `
     <li class="nav-item">
       <div>
+        <a href="/me/carts.html" class="btn btn-sm text-muted px-3 me-2">
+          購物車
+        </a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <div>
         <a href="/me/bookmarks.html" class="btn btn-sm text-muted px-3 me-2">
           收藏列表
         </a>
@@ -55,7 +63,7 @@ function templateOfUserMenu(user, template = '') {
 /* end of templateOfUserMenu() */
 
 function renderUserMenu() {
-  const userId = getLoggedID();  
+  const userId = getLoggedID();
   const url = `${BASE_URL}/600/users/${userId}`;
 
   console.log('url >>> ', url);
@@ -100,7 +108,7 @@ function logout(event) {
   localStorage.clear();
 
   setTimeout(() => {
-    window.location.replace('/');    
+    window.location.replace('/');
   }, 300);
   /* end of setTimeout */
 }
