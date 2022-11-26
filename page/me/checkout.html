@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Checkout</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
+  </head>
+
+  <body>
+    <header class="sticky-top">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <!-- Container-wrapper -->
+        <section class="container-fluid">
+          <!-- Navbar brand -->
+          <a class="navbar-brand me-2" href="/">LOGO</a>
+
+          <!-- Toggle button -->
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible-wrapper -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0"></ul>
+            <!-- end of Left-links -->
+
+            <div class="d-flex align-items-center">
+              <ul class="navbar-nav js-user-menu">
+                <!-- #NOTE: check IF-login and inject dropdown-btns -->
+              </ul>
+              <!-- end of User-btns -->
+
+              <div class="js-guest-menu">
+                <a href="../login.html" class="btn btn-sm text-muted px-3 me-2">
+                  登入
+                </a>
+
+                <a href="../register.html" class="btn btn-primary btn-sm me-3"
+                  >免費註冊</a
+                >
+              </div>
+              <!-- end of GUEST-btns -->
+            </div>
+          </div>
+          <!-- end of Collapsible-wrapper -->
+        </section>
+        <!-- end of Container-wrapper -->
+      </nav>
+    </header>
+
+    <main class="container py-4">
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+          <h3 class="d-flex justify-content-between align-items-center mb-4">
+            <span class="text-muted">購物車總覽</span>
+          </h3>
+
+          <ul class="js-cart-list list-group mb-3"></ul>
+        </div>
+
+        <div class="col-md-8 order-md-1">
+          <h2 class="mb-3">填寫訂單資料</h2>
+
+          <form class="js-form needs-validation" novalidate="">
+            <div class="mb-3">
+              <label for="username">姓名</label>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="姓名"
+                  required=""
+                />
+
+                <span class="invalid-feedback">
+                  Your username is required.
+                </span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="you@example.com"
+              />
+
+              <span class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </span>
+            </div>
+
+            <div class="mb-3">
+              <label for="address">地址</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="1234 Main St"
+                required=""
+              />
+
+              <span class="invalid-feedback">
+                Please enter your shipping address.
+              </span>
+            </div>
+
+            <hr class="mb-3" />
+
+            <button
+              class="js-post-order btn btn-primary btn-md btn-block"
+              type="button"
+            >
+              <!-- <button class="js-post-order btn btn-primary btn-md btn-block" type="submit"> -->
+              送出訂單
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-footer text-muted fs-4">
+          <code class="js-msg">LOG</code>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <!-- <a class="nav-link text-muted" href="/admin">前往後台</a> -->
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script src="../helpers/renderUserMenu.js"></script>
+
+    <script>
+      // const BASE_URL = 'http://localhost:3000';
+      const PRODUCTS_URL = `${BASE_URL}/664/products`;
+      const USERS_URL = `${BASE_URL}/600/users`;
+      const CARTS_URL = `${BASE_URL}/600/carts`;
+
+      const domMsg = document.querySelector('.js-msg');
+
+      const domCartSum = document.querySelector('.js-cart-sum');
+      const domCartList = document.querySelector('.js-cart-list');
+      const domForm = document.querySelector('.js-form');
+
+      const btnAddToCart = document.querySelector('.js-add-cart');
+      const btnPostOrder = document.querySelector('.js-post-order');
+      /* end of definition */
+
+      function getLoggedID() {
+        return localStorage.getItem('userId') || 0;
+      }
+      /* end of hasLogged() */
+
+      // function deleteCart(cartId) {
+      //   const AUTH = `Bearer ${localStorage.getItem('token')}`;
+      //   axios.defaults.headers.common.Authorization = AUTH;
+
+      //   const url = `${CARTS_URL}/${cartId}`;
+
+      //   return axios
+      //     .delete(url)
+      //     .then(function (response) {
+      //       // console.log('DELETE:::', JSON.stringify(response, null, 2));
+      //       domMsg.innerHTML = `DELETE-
+      //         <pre>${JSON.stringify(response.data, null, 2)}</pre>
+      //       `;
+
+      //       if (response.status === 200) {
+      //         renderCartState();
+      //       }
+      //       /* end of res-OK */
+      //       domMsg.innerHTML = response.statusText;
+      //     })
+      //     .catch(function (error) {
+      //       console.log('error:::', JSON.stringify(error, null, 2));
+
+      //       domMsg.innerHTML = error.response.data;
+      //     });
+      //   /*  end of axios */
+      // }
+      /* end of deleteCart(cartId) */
+
+      function axiosDeleteCart(cartId = 0) {
+        const url = `${CARTS_URL}/${cartId}`;
+
+        return axios.delete(url);
+      }
+      /* end of axiosDeleteCart(cartId) */
+
+      // #Step-4.0
+      function sendOrder(orderData) {
+        const userId = getLoggedID();
+
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        const url = `${USERS_URL}/${userId}/orders`;
+
+        const data = orderData;
+
+        axios
+          .post(url, data)
+          .then(function (response) {
+            // console.log('carts:::', JSON.stringify(response, null, 2));
+
+            // domMsg.innerHTML = response.statusText;
+            domMsg.innerHTML = `orders-
+              <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+
+            if (response.status === 201) {
+              const localCarts = localStorage.getItem('carts');
+              const carts = JSON.parse(localCarts);
+              console.log(carts);
+
+              // #NOTE-FIXME: Promise.all
+              // carts.map((item, i) => {
+              //   return deleteCart(item.id);
+              // });
+
+              // Promise.all([getUserAccount(), getUserPermissions()]).then(
+              //   function (results) {
+              //     const acct = results[0];
+              //     const perm = results[1];
+              //   }
+              // );
+
+              let arrayOfDelete = [];
+              carts.forEach((item) => {
+                const request = axiosDeleteCart(item.id);
+                arrayOfDelete.push(request);
+              });
+              console.log('arrayOfDelete:::', arrayOfDelete);
+
+              Promise.all(arrayOfDelete)
+                .then(function (results) {
+                  console.log('results:::', results);
+                  domMsg.innerHTML = `RESULTS-
+                    <pre>${JSON.stringify(results, null, 2)}</pre>
+                  `;
+
+                  // #TODO: results checker
+                  if (results.length === arrayOfDelete.length) {
+                    console.log('已全部刪除！');
+                    setTimeout(() => {
+                      console.log('Redirect!');
+                      window.location.replace('./history.html');
+                    }, 150);
+                    /* end of setTimeout */
+                  }
+
+                  // domMsg.innerHTML = response.statusText;
+                })
+                .catch(function (error) {
+                  console.log('error:::', JSON.stringify(error, null, 2));
+
+                  domMsg.innerHTML = error.response.data;
+                });
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of sendOrder(orderData) */
+
+      // #Step-3
+      function buildOrderData() {
+        console.log('renderCartState!');
+        const userId = getLoggedID();
+
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        const url = `${USERS_URL}/${userId}/carts?_expand=product`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('carts:::', JSON.stringify(response, null, 2));
+            // domMsg.innerHTML = response.statusText;
+            domMsg.innerHTML = `carts-
+              <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+
+            if (response.status === 200) {
+              const carts = response.data;
+
+              localStorage.setItem('carts', JSON.stringify(response.data));
+
+              const orderItems = carts.map((item) => {
+                return {
+                  productId: item.productId,
+                  qty: item.qty,
+                  title: item.product.title,
+                  price: item.product.price,
+                };
+              });
+              console.log(orderItems);
+
+              let sum = 0;
+              carts.forEach((item) => {
+                // #NOTE: change to forEach()
+                const intQty = Number(item.qty) || 0;
+                const intPrice = Number(item.product.price);
+                const total = intQty * intPrice;
+
+                sum += total;
+              });
+              console.log('sum:::', sum);
+
+              const newOrder = {
+                createdAt: Date.now(),
+
+                info: {
+                  email: domForm.email.value,
+                  username: domForm.username.value,
+                  address: domForm.address.value,
+                },
+
+                // #NOTE: naming
+                products: orderItems,
+                payment: sum,
+                hasDelivered: false,
+              };
+              console.log('newOrder:::', newOrder);
+
+              // #Step-4
+              sendOrder(newOrder);
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of buildOrderData() */
+
+      function templateOfCarts(carts, template = ``) {
+        carts.forEach((item) => {
+          const product = item.product;
+
+          template += `
+                  <li
+                    data-id="${item.id}"
+                    class="list-group-item d-flex justify-content-between lh-condensed"
+                  >
+                    <div>
+                      <h6 class="my-0">${product.title}</h6>
+
+                      <small class="text-muted">
+                        數量：
+                        <code>x${item.qty}</code>
+                      </small>
+                    </div>
+
+                    <span class="text-muted">$${product.price}</span>
+                  </li>
+                `;
+        });
+        /* end of forEach() */
+
+        const payment = carts.map((item) => {
+          const intQty = Number(item.qty) || 0;
+          const intPrice = Number(item.product.price);
+          const total = intQty * intPrice;
+
+          return total;
+        });
+        console.log('payment:::', payment);
+
+        let sum = 0;
+        payment.forEach((element) => {
+          sum += element;
+        });
+        console.log('sum:::', sum);
+
+        template += `
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total (TWD)</span>
+            <strong>$ ${sum}</strong>
+          </li>
+        `;
+        return template;
+      }
+      /* end of templateOfCarts(carts, template = ``) */
+
+      // #Step-2.0
+      function renderCartState() {
+        console.log('renderCartState!');
+        // #Step-2.1
+        const userId = getLoggedID();
+
+        // #Step-2.2
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        // #Step-2.3
+        const url = `${USERS_URL}/${userId}/carts?_expand=product`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('carts:::', JSON.stringify(response, null, 2));
+            // domMsg.innerHTML = response.statusText;
+            domMsg.innerHTML = `carts-
+              <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+
+            // #Step-2.4
+            if (response.status === 200) {
+              const carts = response.data;
+              const htmlContent = templateOfCarts(carts);
+              domCartList.innerHTML = htmlContent;
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of renderCartState() */
+
+      // #Step-1.0
+      function renderUserData() {
+        // #Step-1.1
+        const userId = getLoggedID();
+
+        // #Step-1.2
+        const AUTH = `Bearer ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common.Authorization = AUTH;
+
+        // #Step-1.3
+        const url = `${USERS_URL}/${userId}`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            // console.log('users:::', JSON.stringify(response, null, 2));
+            // domMsg.innerHTML = response.statusText;
+            domMsg.innerHTML = `users-
+              <pre>${JSON.stringify(response.data, null, 2)}</pre>
+            `;
+
+            // #Step-1.4
+            if (response.status === 200) {
+              domForm.email.value = response.data.email;
+            }
+            /* end of res-OK */
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error.response.data;
+          });
+        /*  end of axios */
+      }
+      /* end of renderUserData() */
+
+      // #Step-0
+      function init() {
+        // #Step-1
+        renderUserData();
+
+        // #Step-2
+        renderCartState();
+
+        // #Step-3
+        btnPostOrder.addEventListener('click', (event) =>
+          buildOrderData(event)
+        );
+      }
+      /* end of init() */
+
+      // MAIN
+      init();
+    </script>
+  </body>
+</html>
