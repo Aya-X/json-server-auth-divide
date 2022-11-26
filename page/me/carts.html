@@ -173,9 +173,9 @@
                         <div class='col-md-3 col-lg-3 col-xl-2 d-flex'>
                           <button
                             type="button"
-                            data-type="PATCH"
-                            class='btn btn-link px-2'
-                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
+                            data-method="PATCH"
+                            data-type="minus"
+                            class='btn btn-link px-2'                            
                           >
                             <i class='bi bi-dash-lg'></i>
                           </button>
@@ -192,9 +192,9 @@
 
                           <button
                             type="button"
-                            data-type="PATCH"
-                            class='btn btn-link px-2'
-                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                            data-method="PATCH"
+                            data-type="plus"
+                            class='btn btn-link px-2'                            
                           >
                             <i class='bi bi-plus-lg'></i>
                           </button>
@@ -207,7 +207,7 @@
                         <div class='col-md-1 col-lg-1 col-xl-1 text-end'>
                           <button
                             type="button"
-                            data-type="DELETE"
+                            data-method="DELETE"
                             class='btn btn-link px-2 text-danger'                            
                           >
                             <i class='bi bi-trash3'></i>
@@ -301,8 +301,8 @@
         console.log('targetId:::', targetId);
 
         // #Step-4.4
-        const targetType = targetBtn.dataset.type;
-        console.log('targetType:::', targetType);
+        const targetMethod = targetBtn.dataset.method;
+        console.log('targetMethod:::', targetMethod);
 
         // #Step-4.5
         const AUTH = `Bearer ${localStorage.getItem('token')}`;
@@ -312,7 +312,7 @@
         const url = `${CARTS_URL}/${targetId}`;
 
         // #Step-5.0
-        if (targetType === 'PATCH') {
+        if (targetMethod === 'PATCH') {
           // #Step-5.1
           // parentNode.querySelector('input[type=number]')
           const targetInput =
@@ -320,10 +320,32 @@
           console.log('targetInput:::', targetInput);
 
           // #Step-5.2
-          const intQty = Number(targetInput.value) || 1;
-          console.log('intQty:::', intQty);
+          let intQty = Number(targetInput.value) || 1;
 
           // #Step-5.3
+          const targetType = targetBtn.dataset.type;
+
+          // #Step-5.3.1
+          if (targetType === 'minus') {
+            console.log('targetType:::', targetType);
+            intQty = intQty - 1;
+          }
+
+          // #Step-5.3.2
+          if (targetType === 'plus') {
+            console.log('targetType:::', targetType);
+            intQty = intQty + 1;
+          }
+
+          // #Step-5.3.3
+          if (intQty === 0) {
+            intQty = 1;
+          }
+          console.log('intQty:::', intQty);
+          // #Step-5.3.4
+          targetInput.value = intQty;
+
+          // #Step-5.4
           const data = {
             qty: intQty,
           };
@@ -333,7 +355,7 @@
             .then(function (response) {
               // console.log('carts:::', JSON.stringify(response, null, 2));
 
-              // #Step-5.4
+              // #Step-5.5
               if (response.status === 200) {
                 renderCartState();
               }
@@ -350,7 +372,7 @@
         /* end of IF-PATCH */
 
         // #Step-6.0
-        if (targetType === 'DELETE') {
+        if (targetMethod === 'DELETE') {
           axios
             .delete(url)
             .then(function (response) {
