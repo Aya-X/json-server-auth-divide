@@ -29,7 +29,7 @@
     />
 
     <style>
-      figure img{
+      figure img {
         display: none;
       }
     </style>
@@ -279,7 +279,7 @@
 
         const userId = getLoggedID();
         // const url = `/api/users/${userId}`;
-        const url = `${USERS_URL}/${userId}`
+        const url = `${USERS_URL}/${userId}`;
 
         console.log('url >>> ', url);
 
@@ -317,15 +317,15 @@
             domMsg.innerHTML = error?.response?.status || error;
           });
         /*  end of axios */
-
-        document
-          .querySelector('.js-post-list')
-          .addEventListener('click', (event) => modifyPost(event));
       }
       /* end of init() */
 
       // MAIN
       init();
+
+      document
+        .querySelector('.js-post-list')
+        .addEventListener('click', (event) => modifyPost(event));
     </script>
     <!-- end of script -->
   </body>

@@ -519,16 +519,14 @@
 
         // #Step-2
         renderCartState();
-
-        // #Step-3
-        btnPostOrder.addEventListener('click', (event) =>
-          buildOrderData(event)
-        );
       }
       /* end of init() */
 
       // MAIN
       init();
+
+      // #Step-3
+      btnPostOrder.addEventListener('click', (event) => buildOrderData(event));
     </script>
   </body>
 </html>

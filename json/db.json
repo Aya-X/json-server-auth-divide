@@ -87,7 +87,14 @@
       "price": 390
     }
   ],
-  "carts": [],
+  "carts": [
+    {
+      "userId": "1",
+      "productId": "2",
+      "qty": 1,
+      "id": 1
+    }
+  ],
   "orders": [
     {
       "createdAt": 1669186792906,
