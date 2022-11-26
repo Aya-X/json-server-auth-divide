@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Products</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <header class="sticky-top">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <!-- Container-wrapper -->
+        <section class="container-fluid">
+          <!-- Navbar brand -->
+          <a class="navbar-brand me-2" href="/">LOGO</a>
+
+          <!-- Toggle button -->
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Collapsible-wrapper -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0"></ul>
+            <!-- end of Left-links -->
+
+            <div class="d-flex align-items-center">
+              <ul class="navbar-nav js-user-menu">
+                <!-- #NOTE: check IF-login and inject dropdown-btns -->
+              </ul>
+              <!-- end of User-btns -->
+
+              <div class="js-guest-menu">
+                <a href="../login.html" class="btn btn-sm text-muted px-3 me-2">
+                  登入
+                </a>
+
+                <a href="../register.html" class="btn btn-primary btn-sm me-3"
+                  >免費註冊</a
+                >
+              </div>
+              <!-- end of GUEST-btns -->
+            </div>
+          </div>
+          <!-- end of Collapsible-wrapper -->
+        </section>
+        <!-- end of Container-wrapper -->
+      </nav>
+    </header>
+
+    <main class="container py-4">
+      <ul class="js-products-list my-4 row list-unstyled">
+        <!-- inject data from API -->
+        <pre>LOADING...</pre>
+      </ul>
+
+      <div class="card mt-4">
+        <div class="card-footer text-muted fs-4">
+          <code class="js-msg">LOG</code>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <!-- <a class="nav-link text-muted" href="/admin">前往後台</a> -->
+      </div>
+    </footer>
+    <!-- end of DOM -->
+
+    <!-- Bootstrap5 JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script src="../helpers/renderUserMenu.js"></script>
+
+    <script>
+      // const BASE_URL = 'http://localhost:3000';
+      const PRODUCTS_URL = `${BASE_URL}/664/products`;
+
+      const domMsg = document.querySelector('.js-msg');
+      const domProductsList = document.querySelector('.js-products-list');
+      /* end of definition */
+
+      function templateOfProducts(products, template = ``) {
+        products.forEach((item) => {
+          template += `
+            <li
+              data-id='${item.id}'
+              class="col-sm-6 col-lg-4 mb-4"
+            >
+              <div class="card">
+                <section class="card-body">
+
+                  <div class="d-flex justify-content-end align-items-center p-0">
+                    <small class="text-muted">
+                      <code>${item.id}</code>
+                    </small>
+                  </div>
+
+                  <h3 class="card-title  text-truncate">
+                    ${item.title}
+                  </h3>
+
+                  <p class="card-text  text-truncate">
+                    價格：${item.price}
+                  </p>
+
+                  <a href="./prod.html?productId=${item.id}" class="stretched-link"></a>
+
+                </section>              
+              </div>
+            </li>
+          `;
+        });
+        /* end of forEach() */
+
+        return template;
+      }
+      /* end of templateOfProducts(products, template = ``) */
+
+      // #Step-1
+      function renderTheGetProducts() {
+        console.log('GET-Products!');
+
+        const url = `${PRODUCTS_URL}`;
+
+        axios
+          .get(url)
+          .then(function (response) {
+            console.log('GET:::', JSON.stringify(response, null, 2));
+
+            if (response.status === 200) {
+              const products = response?.data;
+              // #Step-2
+              const htmlContent = templateOfProducts(products);
+
+              domProductsList.innerHTML = htmlContent;
+            }
+            /* end if res.ok */
+
+            domMsg.innerHTML = response?.statusText;
+          })
+          .catch(function (error) {
+            console.log('error:::', JSON.stringify(error, null, 2));
+
+            domMsg.innerHTML = error?.response?.data || error;
+          });
+        /*  end of axios */
+      }
+      /* end of renderTheGetProducts() */
+
+      // #Step-0
+      function init() {
+        renderTheGetProducts();
+      }
+      /* end of init() */
+
+      init();
+    </script>
+  </body>
+</html>
