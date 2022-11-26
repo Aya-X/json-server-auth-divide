@@ -69,5 +69,22 @@
       "postId": "2",
       "id": 2
     }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "title": "帶你無痛提升 JavaScript 面試力",
+      "price": 230
+    },
+    {
+      "id": 2,
+      "title": "8 天重新認識 JavaScript！",
+      "price": 290
+    },
+    {
+      "id": 3,
+      "title": "JavaScript 從入門到放棄",
+      "price": 390
+    }
   ]
 }
