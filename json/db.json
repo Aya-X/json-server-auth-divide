@@ -87,5 +87,33 @@
       "price": 390
     }
   ],
-  "carts": []
+  "carts": [],
+  "orders": [
+    {
+      "createdAt": 1669186792906,
+      "info": {
+        "email": "dev@admin.me",
+        "username": "",
+        "address": ""
+      },
+      "items": [
+        {
+          "productId": "1",
+          "qty": 7,
+          "title": "帶你無痛提升 JavaScript 面試力",
+          "price": 230
+        },
+        {
+          "productId": "2",
+          "qty": 5,
+          "title": "8 天重新認識 JavaScript！",
+          "price": 290
+        }
+      ],
+      "payment": 3060,
+      "hasDelivered": false,
+      "userId": "1",
+      "id": 1
+    }
+  ]
 }
