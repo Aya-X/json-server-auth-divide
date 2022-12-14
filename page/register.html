@@ -78,7 +78,9 @@
                   登入
                 </a>
 
-                <a href="/register.html" class="btn btn-primary btn-sm me-3">免費註冊</a>
+                <a href="/register.html" class="btn btn-primary btn-sm me-3"
+                  >免費註冊</a
+                >
               </div>
               <!-- end of GUEST-btns -->
             </div>
@@ -221,16 +223,16 @@
       }
       /* end of signup() */
 
+      // function init() {}
+      /* end of init() */
+
       /**
        * #Step-0: after page refresh
        */
-      function init() {
-        btnSignup.addEventListener('click', () => signup());
-      }
-      /* end of init() */
-
       // MAIN
-      init();
+      btnSignup.addEventListener('click', () => signup());
+
+      // init();
     </script>
     <!-- end of script -->
   </body>

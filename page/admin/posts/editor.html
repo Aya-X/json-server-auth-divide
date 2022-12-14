@@ -209,7 +209,7 @@
 
             const is404 = isLinkError && error.response.status === 404;
             if (is404) {
-              history.go(-1);              
+              history.go(-1);
             }
 
             domMsg.innerHTML = error;

@@ -382,11 +382,6 @@
         // #Step-1
         renderTheGetProductInfo();
 
-        // #Step-2
-        btnAddToCart.addEventListener('click', (event) =>
-          addProductToCart(event)
-        );
-
         // #Step-3
         renderCartState();
       }
@@ -394,6 +389,11 @@
 
       // MAIN
       init();
+
+      // #Step-2
+      btnAddToCart.addEventListener('click', (event) =>
+        addProductToCart(event)
+      );
     </script>
   </body>
 </html>

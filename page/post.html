@@ -361,14 +361,14 @@
         if (!hasUserId) {
           document.querySelector('.js-need-login').style.display = 'none';
         }
-
-        btnAddBookmark.addEventListener('click', () => addBookmark());
-        btnRemoveBookmark.addEventListener('click', () => removeBookmark());
       }
       /* end of init() */
 
       // MAIN
       init();
+
+      btnAddBookmark.addEventListener('click', () => addBookmark());
+      btnRemoveBookmark.addEventListener('click', () => removeBookmark());
     </script>
     <!-- end of script -->
   </body>
